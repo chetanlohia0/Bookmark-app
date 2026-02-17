@@ -1,6 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import Navbar from '@/components/Navbar'
+import DashboardClient from './DashboardClient'
 
 export default async function DashboardPage() {
   const cookieStore = await cookies()
@@ -22,12 +24,15 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const { data: bookmarks } = await supabase
+    .from('bookmarks')
+    .select('*')
+    .order('created_at', { ascending: false })
+
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center space-y-4">
-        <h1 className="text-2xl font-bold">Welcome, {user.email}!</h1>
-        <p className="text-gray-500">Auth is working ✅</p>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar email={user.email!} />
+      <DashboardClient userId={user.id} initialBookmarks={bookmarks || []} />
     </div>
   )
 }

@@ -48,9 +48,10 @@ export default function DashboardClient({
           event: 'DELETE',
           schema: 'public',
           table: 'bookmarks',
-          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
+            console.log('DELETE payload:', payload)
+            console.log('old id:', payload.old.id)
           setBookmarks(prev => prev.filter(b => b.id !== payload.old.id))
         }
       )

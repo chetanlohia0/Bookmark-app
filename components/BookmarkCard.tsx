@@ -21,9 +21,14 @@ export default function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleDelete = async () => {
-    await supabase.from('bookmarks').delete().eq('id', bookmark.id)
-  }
+const handleDelete = async () => {
+  const { error } = await supabase
+    .from('bookmarks')
+    .delete()
+    .eq('id', bookmark.id)
+  
+  if (error) console.error('Delete error:', error)
+}
 
   return (
     <div className="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition space-y-3">

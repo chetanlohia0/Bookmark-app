@@ -9,6 +9,8 @@ export async function addBookmark({
   notes,
   collectionId,
   existingBookmarks,
+  
+
 }: {
   userId: string
   title: string 
@@ -16,6 +18,8 @@ export async function addBookmark({
   notes: string
   collectionId: string | null
   existingBookmarks: { url: string }[]
+
+  
 }): Promise<{ error: string | null }> {
   const supabase = createClient()
 
@@ -35,6 +39,7 @@ export async function addBookmark({
     url: finalUrl,
     notes: notes.trim(),
     collection_id: collectionId || null,
+
   })
 
   return { error: error?.message ?? null }

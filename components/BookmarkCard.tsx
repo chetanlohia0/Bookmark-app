@@ -6,7 +6,7 @@ import { Collection } from '@/lib/collectionActions'
 
 type Bookmark = {
   id: string; title: string; url: string; created_at: string
-  notes: string; click_count: number; collection_id: string | null; 
+  notes: string; click_count: number; collection_id: string | null
 }
 
 export default function BookmarkCard({ bookmark, collections }: { bookmark: Bookmark; collections: Collection[] }) {
@@ -70,7 +70,6 @@ export default function BookmarkCard({ bookmark, collections }: { bookmark: Book
 
   return (
     <div className="bookmark-card">
-      {/* Header */}
       <div className="card-header">
         <div className="card-favicon">
           <img src={`https://www.google.com/s2/favicons?domain=${domain}&sz=64`} alt=""
@@ -82,10 +81,8 @@ export default function BookmarkCard({ bookmark, collections }: { bookmark: Book
         </div>
       </div>
 
-      {/* URL */}
       <button onClick={handleVisit} className="card-url">↗ {bookmark.url}</button>
 
-      {/* Link status */}
       {linkStatus !== 'idle' && (
         <div className="card-link-status" style={{
           background: linkStatus === 'ok' ? 'rgba(74,222,128,0.07)' : linkStatus === 'dead' ? 'rgba(248,113,113,0.07)' : 'var(--bg3)',
@@ -96,7 +93,6 @@ export default function BookmarkCard({ bookmark, collections }: { bookmark: Book
         </div>
       )}
 
-      {/* Notes */}
       {bookmark.notes && (
         <>
           <button className="card-notes-btn" onClick={() => setShowNotes(!showNotes)}>
@@ -106,7 +102,6 @@ export default function BookmarkCard({ bookmark, collections }: { bookmark: Book
         </>
       )}
 
-      {/* Footer */}
       <div className="card-footer">
         <div className="card-meta">
           {new Date(bookmark.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}

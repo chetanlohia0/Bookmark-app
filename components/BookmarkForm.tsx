@@ -43,7 +43,8 @@ export default function BookmarkForm({ userId, collections, existingBookmarks }:
         </div>
         <div className="form-field">
           <label className="form-label">URL</label>
-          <input placeholder="github.com/..." value={url} onChange={e => setUrl(e.target.value)} />
+          <input placeholder="github.com/..." value={url}
+            onChange={e => setUrl(e.target.value)} />
         </div>
       </div>
 

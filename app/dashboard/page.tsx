@@ -30,8 +30,7 @@ export default async function DashboardPage() {
   ])
 
   return (
-    <div className="min-h-screen" style={{ background: '#0f1117' }}>
-      <div className="mesh-bg" />
+<div className="min-h-screen" style={{ background: '#faf7f2' }}>
       <Navbar email={user.email!} />
       <DashboardClient
         userId={user.id}

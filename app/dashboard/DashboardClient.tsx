@@ -7,10 +7,12 @@ import ControlsSection from '@/components/ControlsSection'
 import StatsBar from '@/components/StatsBar'
 import Sidebar from '@/components/Sidebar'
 import { Collection } from '@/lib/collectionActions'
+import AskBookmarks from '@/components/AskBookmarks'
 
 type Bookmark = {
   id: string; title: string; url: string; created_at: string
-  user_id: string; notes: string; click_count: number; collection_id: string | null
+  user_id: string; notes: string; click_count: number
+  collection_id: string | null; og_image: string; summary: string
 }
 
 export default function DashboardClient({
@@ -93,6 +95,7 @@ export default function DashboardClient({
     <main className="main-content">
       <StatsBar bookmarks={bookmarks} />
       <BookmarkForm userId={userId} collections={collections} existingBookmarks={bookmarks} />
+      <AskBookmarks bookmarks={bookmarks} />
       <ControlsSection
         search={search} setSearch={setSearch}
         sort={sort} setSort={setSort}

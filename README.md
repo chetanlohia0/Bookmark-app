@@ -3,7 +3,7 @@
 A secure, real-time, AI-powered personal bookmark manager built with Next.js and Supabase.
 
 🔗 **Live Demo**: https://bookmark-app-rust-seven.vercel.app/
-📦 **Repo**: https://github.com/chetanlohia0/Bookmark-app.git
+📦 **Repo**: https://github.com/chetanlohia0/Smart-bookmark-app
 
 ---
 
@@ -189,10 +189,14 @@ Open http://localhost:3000
 
 ---
 
+
 ## 📸 Screenshots
 
-> Add screenshots here after deployment
+### Landing Page
+![Landing Page](./screenshots/landing.png)
 
----
+### Dashboard
+![Dashboard](./screenshots/dashboard.png)
+
 
 Built by **Chetan Lohia** · 2026

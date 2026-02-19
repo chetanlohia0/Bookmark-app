@@ -2,8 +2,8 @@
 
 A secure, real-time, AI-powered personal bookmark manager built with Next.js and Supabase.
 
-🔗 **Live Demo**: https://your-vercel-url.vercel.app  
-📦 **Repo**: https://github.com/chetanlohia0/Smart-bookmark-app
+🔗 **Live Demo**: https://bookmark-app-rust-seven.vercel.app/
+📦 **Repo**: https://github.com/chetanlohia0/Bookmark-app.git
 
 ---
 

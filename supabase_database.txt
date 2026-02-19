@@ -23,3 +23,48 @@ with check (auth.uid() = user_id);
 create policy "Users can delete own bookmarks"
 on bookmarks for delete
 using (auth.uid() = user_id);
+
+
+
+alter publication supabase_realtime add table bookmarks;
+
+
+
+-- Add tags and notes to bookmarks
+alter table bookmarks add column tags text[] default '{}';
+alter table bookmarks add column notes text default '';
+alter table bookmarks add column click_count integer default 0;
+
+-- Collections table
+create table collections (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users not null,
+  name text not null,
+  created_at timestamp with time zone default now()
+);
+
+-- Add collection reference to bookmarks
+alter table bookmarks add column collection_id uuid references collections(id) on delete set null;
+
+-- RLS for collections
+alter table collections enable row level security;
+
+create policy "Users can view own collections"
+on collections for select using (auth.uid() = user_id);
+
+create policy "Users can insert own collections"
+on collections for insert with check (auth.uid() = user_id);
+
+create policy "Users can delete own collections"
+on collections for delete using (auth.uid() = user_id);
+
+create policy "Users can update own collections"
+on collections for update using (auth.uid() = user_id);
+
+-- Allow users to update their own bookmarks (for edit + click count)
+create policy "Users can update own bookmarks"
+on bookmarks for update using (auth.uid() = user_id);
+
+alter publication supabase_realtime add table collections;
+
+alter table bookmarks drop column tags;

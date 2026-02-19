@@ -24,15 +24,20 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: bookmarks } = await supabase
-    .from('bookmarks')
-    .select('*')
-    .order('created_at', { ascending: false })
+  const [{ data: bookmarks }, { data: collections }] = await Promise.all([
+    supabase.from('bookmarks').select('*').order('created_at', { ascending: false }),
+    supabase.from('collections').select('*').order('created_at', { ascending: true }),
+  ])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: '#0f1117' }}>
+      <div className="mesh-bg" />
       <Navbar email={user.email!} />
-      <DashboardClient userId={user.id} initialBookmarks={bookmarks || []} />
+      <DashboardClient
+        userId={user.id}
+        initialBookmarks={bookmarks ?? []}
+        initialCollections={collections ?? []}
+      />
     </div>
   )
 }

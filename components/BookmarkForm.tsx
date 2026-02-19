@@ -1,75 +1,71 @@
 'use client'
 import { useState } from 'react'
-import { createClient } from '@/lib/supabaseClient'
+import { addBookmark } from '@/lib/bookmarkActions'
+import { Collection } from '@/lib/collectionActions'
 
-export default function BookmarkForm({ userId }: { userId: string }) {
-  const supabase = createClient()
+export default function BookmarkForm({ userId, collections, existingBookmarks }: {
+  userId: string; collections: Collection[]; existingBookmarks: { url: string }[]
+}) {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
+  const [notes, setNotes] = useState('')
+  const [collectionId, setCollectionId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [expanded, setExpanded] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-
-    if (!title.trim() || !url.trim()) {
-      setError('Both fields are required')
-      return
-    }
-
-    let finalUrl = url.trim()
-    if (!/^https?:\/\//i.test(finalUrl)) {
-      finalUrl = 'https://' + finalUrl
-    }
-
-    try {
-      new URL(finalUrl)
-    } catch {
-      setError('Please enter a valid URL')
-      return
-    }
-
+    e.preventDefault(); setError('')
+    if (!title.trim() || !url.trim()) { setError('Title and URL are required'); return }
     setLoading(true)
-    const { error } = await supabase.from('bookmarks').insert({
-      user_id: userId,
-      title: title.trim(),
-      url: finalUrl,
-    })
-
-    if (error) setError(error.message)
-    else {
-      setTitle('')
-      setUrl('')
-    }
+    const { error } = await addBookmark({ userId, title, url, notes, collectionId, existingBookmarks })
+    if (error) setError(error)
+    else { setTitle(''); setUrl(''); setNotes(''); setCollectionId(null); setExpanded(false) }
     setLoading(false)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-2xl shadow-sm border space-y-4">
-      <h2 className="text-lg font-semibold text-gray-700">Add Bookmark</h2>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-        maxLength={100}
-        className="w-full border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-      <input
-        type="text"
-        placeholder="URL (e.g. github.com)"
-        value={url}
-        onChange={e => setUrl(e.target.value)}
-        className="w-full border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 transition disabled:opacity-50"
-      >
-        {loading ? 'Adding...' : 'Add Bookmark'}
+    <form onSubmit={handleSubmit} className="panel" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h2 className="form-title">Add Bookmark</h2>
+        <button type="button" onClick={() => setExpanded(!expanded)} className="form-expand-btn">
+          {expanded ? '▲ Less' : '▼ Notes & Collection'}
+        </button>
+      </div>
+
+      {error && <div className="form-error">{error}</div>}
+
+      <div className="form-row">
+        <div className="form-field">
+          <label className="form-label">Title</label>
+          <input placeholder="e.g. Great article on design..." value={title}
+            onChange={e => setTitle(e.target.value)} maxLength={100} />
+        </div>
+        <div className="form-field">
+          <label className="form-label">URL</label>
+          <input placeholder="github.com/..." value={url} onChange={e => setUrl(e.target.value)} />
+        </div>
+      </div>
+
+      {expanded && (
+        <>
+          <div className="form-field">
+            <label className="form-label">Notes</label>
+            <textarea rows={2} placeholder="Why did you save this?" value={notes}
+              onChange={e => setNotes(e.target.value)} />
+          </div>
+          <div className="form-field">
+            <label className="form-label">Collection</label>
+            <select value={collectionId ?? ''} onChange={e => setCollectionId(e.target.value || null)}>
+              <option value="">No collection</option>
+              {collections.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+        </>
+      )}
+
+      <button type="submit" disabled={loading} className="btn-primary" style={{ width: '100%' }}>
+        {loading ? 'Saving...' : '+ Save Bookmark'}
       </button>
     </form>
   )
